@@ -1,0 +1,10 @@
+Test2::Sample
+#
+# This is a test with a namespace and package name
+package Test2::Sample;
+
+sub some_func {
+	print "HEI!";
+}
+
+1;

@@ -1,0 +1,11 @@
+RandomSpaces::Test3
+#
+# This is a test with random spaces in between
+#
+           package          RandomSpaces::Test3           ;
+
+sub some_func {
+	return 42;
+}
+
+1;
