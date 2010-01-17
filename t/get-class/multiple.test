@@ -1,0 +1,20 @@
+First::Package::Only
+
+#
+# When there's multiple packages, only the first one
+# is considered. This is an accepted limitation for now.
+#
+package First::Package::Only;
+
+sub some_func {
+	return 42;
+}
+
+package Another::Package::Below;
+
+sub some_other_func {
+	return 2703;
+}
+
+1;
+
