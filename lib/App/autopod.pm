@@ -2,8 +2,11 @@ package App::autopod;
 
 use warnings;
 use strict;
-use File::Spec;
-use IO::Scalar;
+
+use Carp        ();
+use File::Slurp ();
+use File::Spec  ();
+use IO::Scalar  ();
 
 our $VERSION = '0.01';
 
@@ -143,6 +146,12 @@ sub _get_lines_matching {
 		: $matches[0];
 }
 
+sub get_class {
+	my ($file) = @_;
+	my @content = File::Slurp::read_file($file);
+	return get_class_from_source(@content);
+}
+
 sub get_class_from_source {
 
     my (@content) = @_;
@@ -176,13 +185,24 @@ sub get_class_from_source {
 }
 
 sub get_subs {
-    my $file = $_;
-    if (! $file) { return }
-    my $user = ucfirst lc ($ENV{USER} || '');
-    my $cmd = q~grep '^sub' __FILE__ | cut -b5- | sort | awk '{ print "=head3 C<" $1 "($arg1, $arg2, ...)>\n\nToo bad. ~ . $user . q~ was too LAZY to update this documentation.\n" }' 2>/dev/null~;
-    $cmd =~ s{__FILE__}{$file};
-    my @out = `$cmd`;
-    return join ("", @out);
+	my ($file) = @_;
+	my @content = File::Slurp::read_file($file);
+	return get_subs_from_source(@content);
+}
+
+sub get_subs_block {
+	my ($file) = @_;
+	my @subs = get_subs($file);
+	my $block = qq{\n};
+
+	for my $sub_name (@subs) {
+		$block .= "=head3 C<< $sub_name >>\n";
+		$block .= "\n";
+		$block .= "A. U. Thor was too lazy to document this function apparently...\n";
+		$block .= "\n";
+	}
+
+	return $block;
 }
 
 sub get_subs_from_source {
@@ -216,6 +236,48 @@ sub get_subs_from_source {
     return wantarray
 		? @sub
 		: $sub[0];
+}
+
+sub process_template {
+	my ($args) = @_;
+
+	my $mod = $args->{module};
+	my $tmpl = $args->{template};
+
+	if (! $mod) {
+		Carp::croak "Can't generate documentation without a 'module' argument";
+	}
+
+    my $class = get_class($mod);
+    (my $testless_class = $class) =~ s{^Test::}{};
+
+    my $vars = {
+        '__FUNCTIONS__' => get_subs_block($mod),
+        '__USER__'      => $ENV{AUTOPOD_USER} || $ENV{USER},
+        '__FULLNAME__'  => $ENV{AUTOPOD_FULLNAME} || $ENV{DEBFULLNAME},
+        '__CLASS__'     => $class,
+        '__TESTLESS_CLASS__' => $testless_class,
+        '__YEAR__'      => (localtime())[5] + 1900,
+    };
+
+    my $fh = defined $tmpl
+        ? open_template($tmpl)
+        : default_template_fh();
+
+	my $output = q{};
+    while(<$fh>) {
+        s[(__\w+__)][$vars->{$1}]eg;
+        $output .= $_;
+    }
+
+    close $fh;
+	return $output;
+}
+
+sub usage {
+    return
+		"Usage: $0 <module.pm>\n" .
+        "       $0 --template=<sometemplate.pod> <module.pm>\n";
 }
 
 1; # End of App::autopod

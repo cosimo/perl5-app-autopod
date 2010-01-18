@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl -I ../lib
 #
 # Automatically generate and print the boilerplate documentation
 # for a given module/class to standard output.
@@ -6,10 +6,10 @@
 # Assumes lots of things for now, and its unbelievably crappy...
 #
 # Usage:
-#     autopod ./my/module/name.pm
+#     autopod --module ./my/module/name.pm
 #
 # Advanced usage:
-#     autopod --template=somefile.pod ./my/module/name.pm
+#     autopod --template somefile.pod --module ./my/module/name.pm
 #
 # The template file is searched for in:
 #
@@ -24,48 +24,23 @@
 
 use strict;
 use warnings;
+
 use App::autopod;
+use Getopt::Long;
 
 if (! @ARGV) {
-    print STDERR
-        "Usage: $0 <module.pm>\n",
-        "       $0 --template=<sometemplate.pod> <module.pm>\n";
-    die "\n";
+    die App::autopod::usage();
 }
 
-# Get template file
-my $file = undef;
-if ($ARGV[0] =~ m{^ \-\-? template =? \s* (\S+) $}mx) {
-    $file = $1;
-    shift @ARGV;
-}
+GetOptions(
+	'template:s' => \my $template,
+	'module:s'   => \my $module,
+);
 
-for (@ARGV) {
-    my $mod = $_;
+my $output = App::autopod::process_template({
+	module => $module,
+	template => $template,
+});
 
-    my $class = App::autopod::get_class($mod);
-    (my $testless_class = $class) =~ s{^Test::}{};
-
-    my $tmpl = {
-        '__FUNCTIONS__' => App::autopod::get_subs($mod),
-        '__USER__'      => $ENV{USER},
-        '__FULLNAME__'  => $ENV{DEBFULLNAME} || ucfirst $ENV{USER},
-        '__CLASS__'     => $class,
-        '__TESTLESS_CLASS__' => $testless_class,
-        '__YEAR__'      => (localtime())[5] + 1900,
-    };
-
-    my $fh = defined $file
-        ? App::autopod::open_template($file)
-        : App::autopod::default_template_fh();
-
-    while(<$fh>) {
-        s[(__\w+__)][$tmpl->{$1}]eg;
-        print;
-    }
-
-    close $fh;
-
-}
-
+print $output;
 
