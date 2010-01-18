@@ -118,43 +118,61 @@ sub open_template {
     return $fh;
 }
 
-sub get_class {
-    my ($file) = $_;
+sub _get_lines_matching {
+	my ($re, @content) = @_;
 
-    if (! $file) { return }
-
-    my $cmd = q(egrep '^\s*package\s*' __FILE__ | awk '{ print $2 }' 2>/dev/null);
-    $cmd =~ s{__FILE__}{$file};
-    my @out = `$cmd`;
-    my $class = $out[0];
-
-    if ($class =~ m{^ \s* ([\w:]+) \s* ;? }mx) {
-        $class = $1;
-    }
-    return $class;
-}
-
-sub get_class_from_source {
-    my (@content) = @_;
-    return unless @content;
+	if (! $re || ! @content) {
+		return;
+	}
 
 	# You can pass lines with/without final "\n"
 	my $text = join("\n", @content);
 	@content = split(m{[\r\n]+}m, $text);
-	my $class;
 
+	# Collect all matching lines
+	my @matches;
 	for (@content) {
-		if ($_ =~ m{^ \s* package \s+}x) {
-			$class = $_;
-			last;
+		if ($_ =~ $re) {
+			push @matches, $_;
+			last unless wantarray;
 		}
 	}
 
-	if (defined $class and $class =~ m{^ \s* package \s+ ([\w:]+) \s* ;? }mx) {
-        $class = $1;
-    }
+	return wantarray 
+		? @matches
+		: $matches[0];
+}
 
-    return $class;
+sub get_class_from_source {
+
+    my (@content) = @_;
+
+	# Collect all package declaration lines
+	my @class = _get_lines_matching(
+		qr{^ \s* package \s+}x,
+		@content
+	);
+
+	# Try to match the "package" declaration and
+	# find the class/module identifier
+	for my $class (@class) {
+		if (defined $class and $class =~ m{
+			^ \s*                # Start of line
+			package \s+          # Package keyword
+			(
+				[_A-Za-z]        # Initial letter or underscore
+				(?:\w|::)*       # Either \w or a "::"
+			)
+			\s* ;?               # Any whitespace and ";"
+			}mx)
+		{
+			$class = $1;
+		}
+	}
+
+    return wantarray
+		? @class
+		: $class[0];
 }
 
 sub get_subs {
@@ -165,6 +183,39 @@ sub get_subs {
     $cmd =~ s{__FILE__}{$file};
     my @out = `$cmd`;
     return join ("", @out);
+}
+
+sub get_subs_from_source {
+    my (@content) = @_;
+
+	# Collect all function headers
+	my @sub = _get_lines_matching(
+		qr{^ \s* sub \s+}x,
+		@content
+	);
+
+	# Try to find the sub identifier
+	for my $sub (@sub) {
+		if (defined $sub and $sub =~ m<
+			^ \s*                             # Start of line
+			sub \s+                           # sub keyword
+			(
+				[_A-Za-z]                     # Initial letter or underscore
+				(?: \w | :: | ')*             # Either \w, "::" or the archaic ' 
+			)
+			\s*
+			(?: \( \s* [\$\%\&\@\;] \s* \) )? # Prototype or not?
+			\s*
+			{?                                # Opening block
+		>mx)
+		{
+			$sub = $1;
+		}
+	}
+
+    return wantarray
+		? @sub
+		: $sub[0];
 }
 
 1; # End of App::autopod

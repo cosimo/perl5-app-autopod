@@ -1,0 +1,13 @@
+prototype_used_here
+
+#
+# Some comments
+#
+package a_package;
+
+sub prototype_used_here ($$$;$$)
+{
+}
+
+1;
+

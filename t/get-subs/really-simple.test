@@ -1,0 +1,12 @@
+my_simple_sub
+
+#
+# Some comments
+#
+package test1;
+
+sub my_simple_sub {
+}
+
+1;
+

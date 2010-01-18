@@ -1,0 +1,12 @@
+!Test:With:Only:One:Colon
+
+#
+# Package name should only contain double colons (::)
+#
+package Test:With:Only:One:Colon ;
+
+sub whatever {
+	say "Hello";
+}
+
+42;
