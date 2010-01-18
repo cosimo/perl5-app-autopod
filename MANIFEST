@@ -1,4 +1,3 @@
-.gitignore
 bin/autopod
 Changes
 lib/App/autopod.pm
@@ -8,8 +7,16 @@ README
 t/00-load.t
 t/boilerplate.t
 t/get-class.t
+t/get-class/failed2.test
+t/get-class/multiple.test
+t/get-class/name-with-spaces.test
 t/get-class/namespace.test
+t/get-class/only-one-colon.test
 t/get-class/random-spaces.test
 t/get-class/reallysimple.test
+t/get-subs.t
+t/get-subs/really-simple-2.test
+t/get-subs/really-simple.test
+t/get-subs/with-prototype.test
 t/pod-coverage.t
 t/pod.t
