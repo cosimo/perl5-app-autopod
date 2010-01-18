@@ -1,0 +1,11 @@
+!F A I L
+#
+# Should fail
+#
+package F A I L;
+
+sub some_func {
+	return 42;
+}
+
+1;

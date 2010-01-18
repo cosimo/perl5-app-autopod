@@ -17,10 +17,18 @@ for (glob("t/get-class/*.test"), glob("get-class/*.test")) {
 	chomp (my $expected_package = shift @test_content);
 	my $found_package = App::autopod::get_class_from_source(@test_content);
 
-	is(
-		$found_package => $expected_package,
-		"Test file $test_file has package $expected_package"
-	);
+	if ($expected_package =~ s/^!//) {
+		isnt(
+			$found_package => $expected_package,
+			"Test file $test_file should *not* have package '$expected_package'"
+		);
+	}
+	else {
+		is(
+			$found_package => $expected_package,
+			"Test file $test_file has package '$expected_package'"
+		);
+	}
 
 }
 
