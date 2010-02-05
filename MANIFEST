@@ -1,6 +1,7 @@
 bin/autopod
 Changes
-lib/App/autopod.pm
+lib/App/Autopod.pm
+lib/App/Autopod/Template/Default.pm
 Makefile.PL
 MANIFEST
 README

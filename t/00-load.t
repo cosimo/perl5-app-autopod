@@ -3,7 +3,7 @@
 use Test::More tests => 1;
 
 BEGIN {
-	use_ok( 'App::autopod' );
+	use_ok( 'App::Autopod' );
 }
 
-diag( "Testing App::autopod $App::autopod::VERSION, Perl $], $^X" );
+diag( "Testing App::Autopod $App::Autopod::VERSION, Perl $], $^X" );

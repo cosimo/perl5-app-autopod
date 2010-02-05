@@ -25,11 +25,11 @@
 use strict;
 use warnings;
 
-use App::autopod;
+use App::Autopod;
 use Getopt::Long;
 
 if (! @ARGV) {
-    die App::autopod::usage();
+    die App::Autopod::usage();
 }
 
 GetOptions(
@@ -37,7 +37,7 @@ GetOptions(
 	'module:s'   => \my $module,
 );
 
-my $output = App::autopod::process_template({
+my $output = App::Autopod::process_template({
 	module => $module,
 	template => $template,
 });

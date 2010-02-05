@@ -48,7 +48,7 @@ TODO: {
     "placeholder date/time"       => qr(Date/time)
   );
 
-  module_boilerplate_ok('lib/App/autopod.pm');
+  module_boilerplate_ok('lib/App/Autopod.pm');
 
 
 }

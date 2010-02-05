@@ -5,7 +5,7 @@ use warnings;
 use Test::More qw(no_plan);
 
 BEGIN {
-	use_ok( 'App::autopod' );
+	use_ok( 'App::Autopod' );
 }
 
 for (glob("t/get-subs/*.test"), glob("get-subs/*.test")) {
@@ -25,7 +25,7 @@ for (glob("t/get-subs/*.test"), glob("get-subs/*.test")) {
 		push @expected_subs, $line;
 	}
 
-	my @found_subs = App::autopod::get_subs_from_source(@test_content);
+	my @found_subs = App::Autopod::get_subs_from_source(@test_content);
 
 	# Compare what we found with the expected result
 	is_deeply(

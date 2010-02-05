@@ -1,4 +1,4 @@
-App-autopod
+App-Autopod
 
 The README is used to introduce the module and provide instructions on
 how to install the module, any machine dependencies it may have (for
@@ -31,16 +31,16 @@ perldoc command.
 You can also look for information at:
 
     RT, CPAN's request tracker
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=App-autopod
+        http://rt.cpan.org/NoAuth/Bugs.html?Dist=App-Autopod
 
     AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/App-autopod
+        http://annocpan.org/dist/App-Autopod
 
     CPAN Ratings
-        http://cpanratings.perl.org/d/App-autopod
+        http://cpanratings.perl.org/d/App-Autopod
 
     Search CPAN
-        http://search.cpan.org/dist/App-autopod
+        http://search.cpan.org/dist/App-Autopod
 
 
 COPYRIGHT AND LICENCE

@@ -3,7 +3,7 @@
 use Test::More qw(no_plan);
 
 BEGIN {
-	use_ok( 'App::autopod' );
+	use_ok( 'App::Autopod' );
 }
 
 for (glob("t/get-class/*.test"), glob("get-class/*.test")) {
@@ -15,7 +15,7 @@ for (glob("t/get-class/*.test"), glob("get-class/*.test")) {
 	close $fh;
 
 	chomp (my $expected_package = shift @test_content);
-	my $found_package = App::autopod::get_class_from_source(@test_content);
+	my $found_package = App::Autopod::get_class_from_source(@test_content);
 
 	if ($expected_package =~ s/^!//) {
 		isnt(

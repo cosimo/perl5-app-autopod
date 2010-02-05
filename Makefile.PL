@@ -3,10 +3,10 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME                => 'App::autopod',
+    NAME                => 'App::Autopod',
     AUTHOR              => 'Cosimo Streppone <cosimo@cpan.org>',
-    VERSION_FROM        => 'lib/App/autopod.pm',
-    ABSTRACT_FROM       => 'lib/App/autopod.pm',
+    VERSION_FROM        => 'lib/App/Autopod.pm',
+    ABSTRACT_FROM       => 'lib/App/Autopod.pm',
     PL_FILES            => {},
     PREREQ_PM => {
         'Test::More' => 0,
@@ -19,6 +19,6 @@ WriteMakefile(
         },
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'App-autopod-*' },
+    clean               => { FILES => 'App-Autopod-*' },
 );
 
