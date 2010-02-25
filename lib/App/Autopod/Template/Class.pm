@@ -1,16 +1,26 @@
-package App::Autopod::Template::Default;
+package App::Autopod::Template::Class;
 
 use strict;
 use warnings;
 use IO::Scalar;
 
 sub priority {
-    return 100;
+    return 200;
 }
 
 # Determines if the current plugin can be used
 # with the desired file or content
-sub matches {
+sub is_applicable {
+    my ($self, $filename, $content) = @_;
+
+    if ($filename !~ m{.+\.[pP][mM]$}) {
+        return 0;
+    }
+
+    if ($content !~ m{^package \s+ \S+}ms) {
+        return 0;
+    }
+
     return 1;
 }
 

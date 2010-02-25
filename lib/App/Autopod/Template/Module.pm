@@ -1,16 +1,26 @@
-package App::Autopod::Template::Default;
+package App::Autopod::Template::Module;
 
 use strict;
 use warnings;
 use IO::Scalar;
 
 sub priority {
-    return 100;
+    return 200;
 }
 
 # Determines if the current plugin can be used
 # with the desired file or content
-sub matches {
+sub is_applicable {
+    my ($self, $filename, $content) = @_;
+
+    if ($filename !~ m{.+\.[pP][mM]$}) {
+        return 0;
+    }
+
+    if ($content !~ m{^package \s+ \S+}ms) {
+        return 0;
+    }
+
     return 1;
 }
 
@@ -26,15 +36,24 @@ sub as_string {
 
 =head1 NAME
 
-__CLASS__ - My shiny new class FTW FTW!
+[% class %] - [% class_description %]
 
 =head1 SYNOPSIS
 
-Fill in the synopsis of __CLASS__
+Here you should fill in the synopsis of [% class %]
+
+    my $obj = [% class %]->new();
+
+    $obj->method1($args, ...);
+    $obj->method2(...);
+
+    my $result = $obj->method3($args);
+
+    ...
 
 =head1 DESCRIPTION
 
-Fill in the description of __CLASS__ 
+Fill in the description of [% class %]
 
 =head1 SUBROUTINES/METHODS
 
@@ -44,7 +63,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 You have to move the following functions to class or instance sections
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-__FUNCTIONS__
+[% functions %]
 
 =head2 CLASS METHODS
 
@@ -58,7 +77,7 @@ an undefined value.
 
 Example:
 
-    my $obj = __CLASS__->new();
+    my $obj = [% class %]->new();
 
 =head2 INSTANCE METHODS
 
@@ -74,25 +93,28 @@ acceleration is possible or not.
 
 =head1 BUGS AND LIMITATIONS
 
+*** Here you should fill in your bug tracker
+information, if you have one.
+
 =head1 SEE ALSO
 
-Other stuff to be looked into...
+*** Other stuff to be looked into, if any
 
 =over 4
 
-=item * this
+=item * this one
 
-=item * that
+=item * that one
 
 =back
 
 =head1 AUTHOR
 
-__FULLNAME__, E<lt>__USER__@domain.localE<gt>
+[% fullname %], E<lt>[% email %]E<gt>
 
 =head1 LICENSE AND COPYRIGHT
 
-Copyright (c), __YEAR__ __FULLNAME__
+Copyright (c), [% year %] [% copyright_holder %]
 All rights reserved.
 
 ~;
