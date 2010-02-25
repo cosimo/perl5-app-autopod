@@ -10,6 +10,41 @@ use IO::Scalar  ();
 
 our $VERSION = '0.01';
 
+sub eval_vars {
+    my ($args) = @_;
+
+    my $mod = $args->{module};
+    if (! $mod) {
+        Carp::croak "eval_vars() needs a 'module' argument";
+    }
+
+    my $class = get_class($mod);
+    (my $testless_class = $class) =~ s{^Test::}{};
+
+    my $user = exists $args->{user}
+        ? $args->{user}
+        : $ENV{AUTOPOD_USER} || $ENV{USER}
+        ;
+
+    my $fullname = exists $args->{fullname}
+        ? $args->{fullname}
+        : $ENV{AUTOPOD_FULLNAME} || $ENV{DEBFULLNAME}
+        ;
+
+    my $current_year = (localtime())[5] + 1900;
+
+    my $vars = {
+        '__CLASS__'     => $class,
+        '__FULLNAME__'  => $fullname,
+        '__FUNCTIONS__' => get_subs_block($mod),
+        '__TESTLESS_CLASS__' => $testless_class,
+        '__USER__'      => $user,
+        '__YEAR__'      => $current_year,
+    };
+
+    return $vars;
+}
+
 sub open_template {
     my ($file) = @_;
 
@@ -166,17 +201,7 @@ sub process_template {
 		Carp::croak "Can't generate documentation without a 'module' argument";
 	}
 
-    my $class = get_class($mod);
-    (my $testless_class = $class) =~ s{^Test::}{};
-
-    my $vars = {
-        '__FUNCTIONS__' => get_subs_block($mod),
-        '__USER__'      => $ENV{AUTOPOD_USER} || $ENV{USER},
-        '__FULLNAME__'  => $ENV{AUTOPOD_FULLNAME} || $ENV{DEBFULLNAME},
-        '__CLASS__'     => $class,
-        '__TESTLESS_CLASS__' => $testless_class,
-        '__YEAR__'      => (localtime())[5] + 1900,
-    };
+    my $vars = eval_vars($args);
 
     my $fh = defined $tmpl
         ? open_template($tmpl)
