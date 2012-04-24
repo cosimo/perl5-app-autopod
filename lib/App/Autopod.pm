@@ -255,13 +255,57 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =head1 FUNCTIONS
 
-=head2 function1
+=head2 eval_vars({ module => $module, user => $username, fullname => $fullname)
 
-=cut
+Main function, takes in a set of params and returns a struct with documentation and variables gathered:
 
-=head2 function2
+    __CLASS__          - Classname
+    __FULLNAME__       - Fullname
+    __FUNCTIONS__      - Function documentation
+    __TESTLESS_CLASS__ - Class name without Test:: prefix
+    __USER__           - Username
+    __YEAR__           - Current year
 
-=cut
+=head2 open_template
+
+Returns a filehandle after opening the provided template $file. Looks into a set of pre-defined directories.
+
+=head2 _get_lines_matching($re, @lines)
+
+Returns lines matching the given regular expression.
+Returns first match in scalar context.
+
+=head2 get_class($file)
+
+Returns a list of class declarations found in $file.
+Returns first match in scalar context.
+
+=head2 get_class_from_source(@lines)
+
+Returns a list of class declarations found in the @lines provided. 
+Returns first match in scalar context.
+
+=head2 get_subs($file)
+
+Returns a list of sub names found in $file. 
+Returns first match in scalar context.
+
+=head2 get_subs_block($file)
+
+Returns a string with documention made from the subs found in $file
+
+=head2 get_subs_from_source(@lines)
+
+Returns a list of sub names found in the @lines provided.
+Returns first match in scalar context.
+
+=head2 process_template({ module => $module, template => $template_file })
+
+Processes a template for the given module and returns the result
+
+=head2 usage
+
+Return usage text
 
 =head1 AUTHOR
 
