@@ -266,7 +266,7 @@ Main function, takes in a set of params and returns a struct with documentation 
     __USER__           - Username
     __YEAR__           - Current year
 
-=head2 open_template
+=head2 open_template($file)
 
 Returns a filehandle after opening the provided template $file. Looks into a set of pre-defined directories.
 
